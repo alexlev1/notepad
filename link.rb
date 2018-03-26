@@ -17,4 +17,22 @@ class Link < Post
 
     [@url, @text, time_string]
   end
+
+  def to_db_hash
+    super.merge(
+      {
+        'text' => @text,
+        'url' => @url
+      }
+    )
+  end
+
+  # получает на вход хэш массив данных и должен заполнить свои поля
+  def load_data(data_hash)
+    super(data_hash) # cперва достаём родительский метод для инициализации общих полей
+
+    # теперь прописываем свое специфичное поле
+    @text = data_hash['text'].split('\n\r')
+    @url = data_hash['url']
+  end
 end

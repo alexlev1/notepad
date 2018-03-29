@@ -22,6 +22,11 @@ entry = Post.create(choices[choice])
 
 entry.read_from_console
 
-id = entry.save_to_db
+begin
+  id = entry.save_to_db
+rescue SQLite3::SQLException => error
+  puts "Не удалось выполнить запрос к базе данных!"
+  abort error.message
+end
 
 puts "Ура, запись сохранена, id = #{id}"

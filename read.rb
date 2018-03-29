@@ -21,7 +21,16 @@ OptionParser.new do |opt|
   opt.on('--limit NUMBER', 'сколько последних постов показать (по умолчению все') { |o| options[:limit] = o }
 end.parse!
 
-result = Post.find(options[:limit], options[:type], options[:id])
+begin
+  result = if !options[:id].nil?
+             Post.find_by_id(options[:limit], options[:type], options[:id])
+           else
+             Post.find_all(options[:limit], options[:type])
+           end
+rescue SQLite3::SQLException => error
+  puts "Не возможно подключиться к базе данных!"
+  abort error.message
+end
 
 if result.is_a? Post
   puts "Запись #{result.class.name}, id = #{options[:id]}"
